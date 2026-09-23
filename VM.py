@@ -1,3 +1,5 @@
+import msvcrt
+
 class VMHaltError(Exception):
     pass
 
@@ -16,13 +18,18 @@ instruction_set = {
     0x00: "HALT",
     0x01: "NOP",
     0x02: "LDI",
-    0x03: "STORE",
-    0x04: "MOV",
-    0x05: "ADD",
-    0x0A: "A",
-    0x0B: "B",
-    0x0C: "C",
-    0x0D: "D"
+    0x03: "LOAD",
+    0x04: "STORE",
+    0x05: "MOV",
+    0x06: "ADD",
+    0x07: "SUB",
+    0x08: "MUL",
+    0x09: "DIV",
+    0x0A: "GETC",
+    0x1A: "A",
+    0x1B: "B",
+    0x1C: "C",
+    0x1D: "D"
 }
 
 registers = {
@@ -30,8 +37,15 @@ registers = {
     "B": 0,
     "C": 0,
     "D": 0,
-    "PC": 0x0000
+    "PC": 0x0000,
+    "OF": 0
 }
+
+def updateFlags(address):
+    if registers[instruction_set[address]] != registers[instruction_set[address]] & 0xff:
+        registers["OF"] = 1
+        registers[instruction_set[address]] &= 0xff
+    else: registers["OF"] = 0 
 
 def execute(line):
     call = instruction_set[line[0]]
@@ -61,20 +75,21 @@ def execute(line):
             registers[instruction_set[address]] = registers[instruction_set[lowbyte]]
         case "ADD":
             registers[instruction_set[address]] += registers[instruction_set[lowbyte]]
-            registers[instruction_set[address]] &= 0xff
+            updateFlags(address)
         case "SUB":
             registers[instruction_set[address]] -= registers[instruction_set[lowbyte]]
-            registers[instruction_set[address]] &= 0xff       
+            updateFlags(address)     
         case "MUL":
             registers[instruction_set[address]] *= registers[instruction_set[lowbyte]]
-            registers[instruction_set[address]] &= 0xff 
+            updateFlags(address)
         case "DIV":
             registers[instruction_set[address]] //= registers[instruction_set[lowbyte]]
-            registers[instruction_set[address]] &= 0xff              
+            updateFlags(address)    
+        case "GETC":
+            registers[instruction_set[address]] = chr(msvcrt.getch().decode('ascii'))    
 
 
     registers["PC"] += 4
-
 
 def cycle():
     while registers["PC"] < len(memory):
@@ -84,16 +99,10 @@ def cycle():
             print(f"HALT instruction at {hex_pad(registers["PC"])}. Program interrupted.")
             break
 
-boot = [
-"02", "0a", "49", "00", # LDI A, 73 = "I"
-"03", "0a", "00", "f0", # STORE A, 0xf000
-"02", "0a", "63", "00", # LDI A, 99 = "c"
-"03", "0a", "00", "f0", # STORE A, 0xf000
-"02", "0a", "68", "00", # LDI A, 104 = "h"
-"03", "0a", "00", "f0", # STORE A, 0xf000
-]
 
-memory[0x0000:0x0000+len(boot)] = bytes.fromhex(''.join(boot))
+with open("boot.bin", "rb") as f:
+    boot = f.read()
+    memory[0x0000:0x0000+len(boot)] = boot
 
 cycle()
 
