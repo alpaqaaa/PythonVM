@@ -26,6 +26,7 @@ instruction_set = {
     0x08: "MUL",
     0x09: "DIV",
     0x0A: "GETC",
+    0x0B: "JMP",
     0x1A: "A",
     0x1B: "B",
     0x1C: "C",
@@ -86,7 +87,9 @@ def execute(line):
             registers[instruction_set[address]] //= registers[instruction_set[lowbyte]]
             updateFlags(address)    
         case "GETC":
-            registers[instruction_set[address]] = chr(msvcrt.getch().decode('ascii'))    
+            registers[instruction_set[address]] = ord(msvcrt.getch().decode('ascii'))
+        case "JMP":
+            registers["PC"] = (highbyte << 8) | lowbyte
 
 
 

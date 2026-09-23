@@ -1,3 +1,12 @@
 import subprocess
+import sys
 
-subprocess.Popen(["powershell.exe", "-NoExit", "-Command", "python VM.py"])
+subprocess.Popen(
+    [
+        "cmd.exe",
+        "/k",
+        sys.executable,
+        "VM.py"
+    ],
+    creationflags=subprocess.CREATE_NEW_CONSOLE
+)

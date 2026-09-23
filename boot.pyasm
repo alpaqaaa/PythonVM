@@ -1,0 +1,4 @@
+VAR a
+SETVALUE a, 5
+ADDVALUE a, -1
+PRINTVAR a
