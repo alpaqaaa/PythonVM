@@ -59,8 +59,9 @@ def assemble(line):
 
 
 boot = """
-GETC A
-PRINTREG A
+VAR x
+SET x 5
+PRINTVAR x
 """
 
 instr_list = [line for line in boot.splitlines() if line != ""]

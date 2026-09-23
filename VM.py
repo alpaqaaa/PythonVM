@@ -89,8 +89,8 @@ def execute(line):
             registers[instruction_set[address]] = chr(msvcrt.getch().decode('ascii'))    
 
 
-    registers["PC"] += 4
 
+    registers["PC"] += 4
 def cycle():
     while registers["PC"] < len(memory):
         try:
