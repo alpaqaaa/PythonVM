@@ -11,14 +11,11 @@ PRINTNUM <number>;
 PRINTREG <register A/B/C/D>;  
 PRINTVAR <variable>;  
 NEWLINE;  
-VAR <name>;  
-SETVALUE <var>,  
-<value>;  
-ADDVALUE <var>,  
-<value>;  
-SETVAR <var>,  
-<var>;  
-GETC <register>;  
+VAR \<name>;  
+SETVALUE \<var>,  \<value>;  
+ADDVALUE \<var>,  \<value>;  
+SETVAR \<var>,  \<var>;  
+GETC \<register>;  
 JMP (work in progress);  
 
 ## Memory addresses
