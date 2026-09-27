@@ -4,12 +4,12 @@
 An 8-bit virtual machine executing binary instructions alongside an assembler converting "pyassembly" into a boot.bin file.  
 
 ## Valid assembly commands
-PRINT <string>;  
-PRINTCHAR <char/ascii code>;  
+PRINT \<string>;  
+PRINTCHAR \<char/ascii code>;  
 PRINTSPACE;  
-PRINTNUM <number>;  
-PRINTREG <register A/B/C/D>;  
-PRINTVAR <variable>;  
+PRINTNUM \<number>;  
+PRINTREG \<register A/B/C/D>;  
+PRINTVAR \<variable>;  
 NEWLINE;  
 VAR \<name>;  
 SETVALUE \<var>,  \<value>;  
