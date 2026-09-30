@@ -1,4 +1,4 @@
-import msvcrt
+import msvcrt, time
 
 class VMHaltError(Exception):
     pass
@@ -15,22 +15,22 @@ def hex_pad(num):
 memory = bytearray(65536)
 
 instruction_set = {
-    0x00: "HALT",
-    0x01: "NOP",
-    0x02: "LDI",
-    0x03: "LOAD",
-    0x04: "STORE",
-    0x05: "MOV",
-    0x06: "ADD",
-    0x07: "SUB",
-    0x08: "MUL",
-    0x09: "DIV",
-    0x0A: "GETC",
-    0x0B: "JMP",
-    0x1A: "A",
-    0x1B: "B",
-    0x1C: "C",
-    0x1D: "D"
+    0x00: "HALT",  # stop the program
+    0x01: "NOP",   # no operation
+    0x02: "LDI",   # load immediate value into register
+    0x03: "LOAD",  # load from memory into register
+    0x04: "STORE", # store register in memory
+    0x05: "MOV",   # copy one register to another
+    0x06: "ADD",   # add two registers together
+    0x07: "SUB",   # subtract one register from another
+    0x08: "MUL",   # multiply two registers together
+    0x09: "DIV",   # divide one register from another
+    0x0A: "GETC",  # get char input into register
+    0x0B: "JMP",   # jump to address
+    0x1A: "A",     # register A
+    0x1B: "B",     # register B
+    0x1C: "C",     # register C
+    0x1D: "D"      # register D
 }
 
 registers = {
@@ -66,11 +66,9 @@ def execute(line):
             registers[instruction_set[address]] = memory[(highbyte << 8) | lowbyte]
         case "STORE":
             if ((highbyte << 8) | lowbyte) == 0xf000:
-                print(chr(registers[instruction_set[address]]), end="")
-                registers["PC"] += 4
-                return
+                print(chr(registers[instruction_set[address]]), end="", flush=True)
             elif ((highbyte << 8) | lowbyte) == 0xf001:
-                print(registers[instruction_set[address]], end="")
+                print(registers[instruction_set[address]], end="", flush=True)
             memory[(highbyte << 8) | lowbyte] = registers[instruction_set[address]]
         case "MOV":
             registers[instruction_set[address]] = registers[instruction_set[lowbyte]]
@@ -90,10 +88,12 @@ def execute(line):
             registers[instruction_set[address]] = ord(msvcrt.getch().decode('ascii'))
         case "JMP":
             registers["PC"] = (highbyte << 8) | lowbyte
+            return
 
 
 
     registers["PC"] += 4
+
 def cycle():
     while registers["PC"] < len(memory):
         try:

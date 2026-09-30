@@ -1,4 +1,5 @@
-VAR a
-SETVALUE a, 5
-ADDVALUE a, -1
-PRINTVAR a
+LDI A, 65
+print:
+STORE f000, A
+main:
+JMP print
